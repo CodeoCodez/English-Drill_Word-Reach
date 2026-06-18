@@ -19,6 +19,8 @@
     --sage-soft: #DCE3D4;
     --amber: #D4A24C;
     --amber-soft: #F0DDB6;
+    --plum: #7A5C7A;
+    --plum-soft: #E5D9E5;
     --card: #FFFFFF;
     --shadow: 0 1px 2px rgba(31,36,33,0.06), 0 4px 14px rgba(31,36,33,0.05);
     --radius: 14px;
@@ -62,7 +64,7 @@
     display:flex;
     align-items:baseline;
     justify-content:space-between;
-    margin-bottom:28px;
+    margin-bottom:20px;
     gap:12px;
   }
   header h1{
@@ -78,6 +80,11 @@
     color:var(--ink-soft);
     margin:2px 0 0;
   }
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
   .stat-pill{
     font-family:'JetBrains Mono', monospace;
     font-size:0.72rem;
@@ -87,6 +94,77 @@
     padding:6px 12px;
     color:var(--ink-soft);
     white-space:nowrap;
+    cursor:pointer;
+  }
+  .stat-pill:hover{ border-color:var(--ink-soft); }
+  .icon-btn{
+    width:30px;
+    height:30px;
+    border-radius:999px;
+    border:1px solid var(--paper-line);
+    background:var(--card);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+  .icon-btn:hover{ border-color:var(--ink-soft); color:var(--ink); }
+  .icon-btn.off{ opacity:0.45; }
+
+  /* ---------- STATS PANEL ---------- */
+  .stats-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px;
+    margin-bottom:18px;
+    display:none;
+  }
+  .stats-card h3{
+    font-family:'Fraunces', serif;
+    font-size:1.05rem;
+    margin:0 0 14px;
+  }
+  .stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .stats-grid .score-box{ background:var(--paper); }
+  .stats-close{
+    width:100%;
+    background:transparent;
+    border:1.5px solid var(--paper-line);
+    border-radius:10px;
+    padding:11px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:500;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .stats-close:hover{ border-color:var(--ink-soft); color:var(--ink); }
+  .best-row{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    padding:8px 0;
+    border-bottom:1px solid var(--paper-line);
+    display:flex;
+    justify-content:space-between;
+  }
+  .best-row:last-of-type{ border-bottom:none; }
+  .best-empty{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:0.82rem;
+    font-style:italic;
+    font-family:'Fraunces', serif;
+    padding:10px 0;
   }
 
   /* ---------- SETUP SCREEN ---------- */
@@ -96,6 +174,36 @@
     box-shadow:var(--shadow);
     padding:28px;
   }
+  .mode-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:22px;
+  }
+  .mode-btn{
+    flex:1;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:0.85rem;
+    padding:12px 8px;
+    border:1.5px solid var(--paper-line);
+    background:var(--paper);
+    border-radius:10px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .mode-btn.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--paper);
+  }
+  .mode-btn small{
+    display:block;
+    font-size:0.68rem;
+    font-weight:400;
+    opacity:0.7;
+    margin-top:2px;
+  }
+
   .field-label{
     font-size:0.78rem;
     text-transform:uppercase;
@@ -109,7 +217,7 @@
     display:grid;
     grid-template-columns:repeat(7, 1fr);
     gap:8px;
-    margin-bottom:22px;
+    margin-bottom:6px;
   }
   .letter-btn{
     font-family:'Fraunces', serif;
@@ -123,15 +231,39 @@
     color:var(--ink);
     transition:all 0.15s ease;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
+    position:relative;
   }
+  .letter-btn .diff-dot{
+    position:absolute;
+    top:4px;
+    right:5px;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:var(--paper-line);
+  }
+  .letter-btn.hard .diff-dot{ background:var(--clay); }
+  .letter-btn.medium .diff-dot{ background:var(--amber); }
   .letter-btn:hover{ border-color:var(--clay); transform:translateY(-1px); }
   .letter-btn.active{
     background:var(--clay);
     border-color:var(--clay);
     color:white;
   }
+  .letter-btn.active .diff-dot{ background:rgba(255,255,255,0.6); }
+  .diff-legend{
+    display:flex;
+    gap:14px;
+    font-size:0.68rem;
+    color:var(--ink-soft);
+    margin-bottom:22px;
+    align-items:center;
+  }
+  .diff-legend span{ display:flex; align-items:center; gap:5px; }
+  .diff-legend .dot{ width:6px; height:6px; border-radius:50%; display:inline-block; }
   .random-letter{
     grid-column:span 7;
     font-family:'Space Grotesk', sans-serif;
@@ -202,6 +334,34 @@
     color:white;
   }
 
+  .random-pick-banner{
+    background:var(--plum-soft);
+    border-radius:10px;
+    padding:16px;
+    text-align:center;
+    margin-bottom:22px;
+    display:none;
+  }
+  .random-pick-banner .rp-letter{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:2.2rem;
+    color:var(--plum);
+    line-height:1;
+  }
+  .random-pick-banner .rp-cat{
+    font-size:0.85rem;
+    color:var(--ink);
+    font-weight:600;
+    margin-top:4px;
+  }
+  .random-pick-banner .rp-hint{
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
   .start-btn{
     width:100%;
     background:var(--ink);
@@ -230,7 +390,7 @@
     display:flex;
     align-items:center;
     gap:18px;
-    margin-bottom:18px;
+    margin-bottom:14px;
     padding-bottom:18px;
     border-bottom:1px solid var(--paper-line);
   }
@@ -260,7 +420,36 @@
     min-width:58px;
     text-align:right;
   }
-  .timer.urgent{ color:var(--clay); }
+  .timer.urgent{ color:var(--clay); animation:pulse 1s ease infinite; }
+  @keyframes pulse{
+    0%,100%{ opacity:1; }
+    50%{ opacity:0.5; }
+  }
+
+  .streak-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    padding:9px 12px;
+    background:var(--paper);
+    border-radius:9px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.76rem;
+    color:var(--ink-soft);
+  }
+  .streak-bar .streak-flame{
+    font-weight:600;
+    color:var(--ink);
+  }
+  .streak-bar .streak-flame.lit{ color:var(--clay); }
+  .streak-bar .mult-tag{
+    font-weight:600;
+    color:var(--sage);
+    background:var(--sage-soft);
+    padding:2px 8px;
+    border-radius:6px;
+  }
 
   .input-row{
     display:flex;
@@ -355,6 +544,11 @@
     padding:2px 7px;
     border-radius:6px;
   }
+  .word-row .pts-badge{
+    font-size:0.7rem;
+    color:var(--sage);
+    font-weight:600;
+  }
   .word-log::-webkit-scrollbar{ width:6px; }
   .word-log::-webkit-scrollbar-thumb{ background:var(--paper-line); border-radius:3px; }
 
@@ -377,7 +571,9 @@
     border-radius:10px;
     padding:12px;
     text-align:center;
+    transition:transform 0.15s ease;
   }
+  .score-box.pop{ transform:scale(1.07); }
   .score-num{
     font-family:'Fraunces', serif;
     font-size:1.5rem;
@@ -407,15 +603,32 @@
   .results-sub{
     color:var(--ink-soft);
     font-size:0.88rem;
-    margin-bottom:24px;
+    margin-bottom:18px;
+  }
+  .pb-banner{
+    background:var(--amber-soft);
+    color:#8a6420;
+    font-size:0.82rem;
+    font-weight:600;
+    padding:10px;
+    border-radius:9px;
+    margin-bottom:18px;
+    display:none;
   }
   .results-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
-    margin-bottom:24px;
+    margin-bottom:12px;
   }
   .results-grid .score-box{ background:var(--paper); }
+  .results-grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .results-grid2 .score-box{ background:var(--paper); }
   .again-btn{
     width:100%;
     background:var(--clay);
@@ -458,6 +671,10 @@
     .big-letter{ font-size:2.6rem; }
     .letter-grid{ grid-template-columns:repeat(6,1fr); }
   }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
 </style>
 </head>
 <body>
@@ -468,23 +685,69 @@
       <h1>Word <span>Reach</span></h1>
       <p class="tagline">a retrieval drill, not a vocabulary test</p>
     </div>
-    <div class="stat-pill" id="historyPill">0 words logged ever</div>
+    <div class="header-right">
+      <button class="icon-btn" id="soundToggle" title="toggle sound">🔊</button>
+      <div class="stat-pill" id="historyPill">0 words logged ever</div>
+    </div>
   </header>
+
+  <!-- STATS PANEL -->
+  <div class="stats-card" id="statsCard">
+    <h3>Your stats</h3>
+    <div class="stats-grid">
+      <div class="score-box">
+        <div class="score-num" id="statRounds">0</div>
+        <div class="score-label">Rounds played</div>
+      </div>
+      <div class="score-box">
+        <div class="score-num" id="statBestStreak">0</div>
+        <div class="score-label">Best streak ever</div>
+      </div>
+      <div class="score-box">
+        <div class="score-num" id="statTotalValid">0</div>
+        <div class="score-label">Total valid words</div>
+      </div>
+      <div class="score-box">
+        <div class="score-num" id="statTotalNovel">0</div>
+        <div class="score-label">Total first-timers</div>
+      </div>
+    </div>
+    <div id="bestList"></div>
+    <button class="stats-close" id="statsCloseBtn">Close</button>
+  </div>
 
   <!-- SETUP -->
   <div class="setup-card" id="setupCard">
-    <label class="field-label">Pick a letter</label>
-    <div class="letter-grid" id="letterGrid"></div>
-    <button class="random-letter" id="randomLetterBtn">🎲 surprise me with a letter</button>
+    <div class="mode-row">
+      <button class="mode-btn active" id="modePickBtn">Pick my own<small>choose letter & category</small></button>
+      <button class="mode-btn" id="modeRandomBtn">Total randomness<small>no picking, just go</small></button>
+    </div>
 
-    <label class="field-label">Pick a category</label>
-    <div class="category-grid" id="categoryGrid"></div>
+    <div id="pickFields">
+      <label class="field-label">Pick a letter</label>
+      <div class="letter-grid" id="letterGrid"></div>
+      <div class="diff-legend">
+        <span><i class="dot" style="background:var(--paper-line)"></i> common</span>
+        <span><i class="dot" style="background:var(--amber)"></i> tricky</span>
+        <span><i class="dot" style="background:var(--clay)"></i> rare — bonus points</span>
+      </div>
+      <button class="random-letter" id="randomLetterBtn">🎲 surprise me with a letter</button>
 
-    <label class="field-label">Round length</label>
-    <div class="time-row" id="timeRow">
-      <button class="time-btn" data-secs="30">30s</button>
-      <button class="time-btn active" data-secs="60">60s</button>
-      <button class="time-btn" data-secs="90">90s</button>
+      <label class="field-label" style="margin-top:22px;">Pick a category</label>
+      <div class="category-grid" id="categoryGrid"></div>
+
+      <label class="field-label">Round length</label>
+      <div class="time-row" id="timeRow">
+        <button class="time-btn" data-secs="30">30s</button>
+        <button class="time-btn active" data-secs="60">60s</button>
+        <button class="time-btn" data-secs="90">90s</button>
+      </div>
+    </div>
+
+    <div class="random-pick-banner" id="randomPickBanner">
+      <div class="rp-letter" id="rpLetter">S</div>
+      <div class="rp-cat" id="rpCat">Verbs</div>
+      <div class="rp-hint">a fresh roll every time you tap start</div>
     </div>
 
     <button class="start-btn" id="startBtn">Start round →</button>
@@ -501,6 +764,12 @@
       <div class="timer" id="timer">60</div>
     </div>
 
+    <div class="streak-bar">
+      <span>streak: <span class="streak-flame" id="streakCount">0</span></span>
+      <span class="mult-tag" id="multTag">1.0×</span>
+      <span id="letterDiffTag"></span>
+    </div>
+
     <div class="input-row">
       <input type="text" id="wordInput" placeholder="start typing..." autocomplete="off" autocapitalize="off" spellcheck="false">
       <button class="submit-btn" id="submitBtn">Add</button>
@@ -512,17 +781,17 @@
     </div>
 
     <div class="score-row">
-      <div class="score-box">
+      <div class="score-box" id="boxValid">
         <div class="score-num" id="liveValid">0</div>
         <div class="score-label">Valid</div>
       </div>
-      <div class="score-box">
+      <div class="score-box" id="boxNovel">
         <div class="score-num" id="liveNovel">0</div>
         <div class="score-label">New for you</div>
       </div>
-      <div class="score-box">
-        <div class="score-num" id="liveRepeats">0</div>
-        <div class="score-label">Repeats</div>
+      <div class="score-box" id="boxScore">
+        <div class="score-num" id="livePoints">0</div>
+        <div class="score-label">Points</div>
       </div>
     </div>
   </div>
@@ -531,6 +800,7 @@
   <div class="results-card" id="resultsCard">
     <h2 id="resultsHeadline">Time's up.</h2>
     <p class="results-sub" id="resultsSub">Here's how the search went.</p>
+    <div class="pb-banner" id="pbBanner">★ new personal best for this letter & category</div>
     <div class="results-grid">
       <div class="score-box">
         <div class="score-num" id="finalValid">0</div>
@@ -541,26 +811,54 @@
         <div class="score-label">First-time words</div>
       </div>
     </div>
+    <div class="results-grid2">
+      <div class="score-box">
+        <div class="score-num" id="finalStreak">0</div>
+        <div class="score-label">Best streak</div>
+      </div>
+      <div class="score-box">
+        <div class="score-num" id="finalPoints">0</div>
+        <div class="score-label">Points</div>
+      </div>
+    </div>
     <button class="again-btn" id="sameAgainBtn">Run it again — same letter & category</button>
     <button class="setup-again-btn" id="newSetupBtn">Pick something new</button>
   </div>
 
-  <footer>Word validation via dictionaryapi.dev · words you've used before are tracked locally in this browser, just for you</footer>
+  <footer>Word validation via dictionaryapi.dev (and curated lists for animals, food, countries, colors & jobs) · your words and stats are tracked locally in this browser, just for you</footer>
 </div>
 
 <script>
+const WORD_LISTS = {"animal":{"A":["aardvark","albatross","alligator","alpaca","anaconda","angelfish","ant","anteater","antelope","ape","armadillo","axolotl"],"B":["baboon","badger","barracuda","bass","bat","bear","beaver","bee","beetle","bison","boar","bobcat","buffalo","bull","butterfly","buzzard"],"C":["camel","canary","capybara","caribou","cat","caterpillar","catfish","centipede","chameleon","cheetah","chicken","chimpanzee","chinchilla","chipmunk","cicada","clam","cobra","cockatoo","cockroach","cod","condor","coral","cougar","cow","coyote","crab","crane","cricket","crocodile","crow"],"D":["deer","dingo","dodo","dog","dolphin","donkey","dove","dragonfly","duck","dugong"],"E":["eagle","earthworm","earwig","eel","egret","elephant","elk","emu"],"F":["falcon","ferret","finch","firefly","fish","flamingo","flea","fly","fox","frog"],"G":["gazelle","gecko","gerbil","gibbon","giraffe","gnat","gnu","goat","goldfish","goose","gopher","gorilla","grasshopper","grouse","guinea-pig","gull","guppy"],"H":["hamster","hare","hawk","hedgehog","heron","herring","hippo","hippopotamus","hornet","horse","hound","hummingbird","hyena"],"I":["ibex","ibis","iguana","impala"],"J":["jackal","jaguar","jay","jellyfish"],"K":["kangaroo","kingfisher","kiwi","koala","komodo-dragon","kookaburra","krill"],"L":["ladybug","lamb","lark","lemming","lemur","leopard","liger","lion","lizard","llama","lobster","locust","lynx"],"M":["macaque","macaw","magpie","mallard","mammoth","manatee","mandrill","mantis","marmoset","marmot","meerkat","mink","mole","mongoose","monkey","moose","mosquito","moth","mouse","mule","muskox"],"N":["narwhal","newt","nightingale"],"O":["ocelot","octopus","okapi","opossum","orangutan","orca","ostrich","otter","owl","ox","oyster"],"P":["panda","pangolin","panther","parakeet","parrot","partridge","peacock","pelican","penguin","pheasant","pig","pigeon","piranha","platypus","polecat","pony","porcupine","porpoise","possum","prawn","puffin","puma","python"],"Q":["quail","quetzal","quokka","quoll"],"R":["rabbit","raccoon","ram","rat","rattlesnake","raven","reindeer","rhinoceros","robin","rooster"],"S":["salamander","salmon","sandpiper","sardine","scorpion","seahorse","seal","shark","sheep","shrew","shrimp","skunk","sloth","slug","snail","snake","sparrow","spider","sponge","squid","squirrel","starfish","stingray","stoat","stork","swallow","swan"],"T":["tapir","tarantula","termite","tern","tiger","toad","tortoise","toucan","trout","turkey","turtle"],"U":["urchin"],"V":["vicuna","viper","vole","vulture"],"W":["wallaby","walrus","warthog","wasp","weasel","whale","wildebeest","wolf","wolverine","wombat","woodpecker","worm","wren"],"Y":["yak"],"Z":["zebra"]},"food":{"A":["açai","apple","apricot","artichoke","asparagus","avocado"],"B":["bacon","bagel","baguette","banana","barley","basil","beans","beef","beet","bell-pepper","berry","biscuit","blueberry","bok-choy","bread","broccoli","broth","brownie","bun","burger","burrito","butter"],"C":["cabbage","cake","candy","cantaloupe","caramel","carrot","cashew","cauliflower","caviar","celery","cereal","cheese","cherry","chicken","chickpea","chili","chips","chocolate","chowder","cider","cinnamon","clam","clementine","coconut","cod","coffee","cookie","corn","crab","cracker","cranberry","cream","croissant","cucumber","curry","custard"],"D":["date","dill","donut","dough","dumpling"],"E":["edamame","egg","eggplant","endive"],"F":["fennel","feta","fig","fish","flour","fritter","fudge"],"G":["garlic","gelato","ginger","granola","grape","grapefruit","gravy","guava"],"H":["ham","hazelnut","herb","honey","honeydew","hot-dog","hummus"],"I":["ice-cream","icing"],"J":["jalapeno","jam","jelly","juice"],"K":["kale","ketchup","kiwi","kombucha"],"L":["lamb","lasagna","leek","lemon","lentil","lettuce","lime","lobster"],"M":["macaroni","mandarin","mango","maple-syrup","margarine","marshmallow","mayonnaise","meatball","melon","milk","mint","molasses","muesli","muffin","mushroom","mussel","mustard"],"N":["nachos","noodle","nutmeg","nuts"],"O":["oats","octopus","okra","olive","omelet","onion","orange","oregano","oyster"],"P":["pancake","papaya","paprika","parsley","parsnip","pasta","pastry","pea","peach","peanut","pear","pecan","pepper","pickle","pie","pineapple","pistachio","pita","pizza","plum","popcorn","pork","porridge","potato","pretzel","prune","pudding","pumpkin"],"Q":["quesadilla","quiche","quinoa"],"R":["radish","raisin","ramen","raspberry","relish","rhubarb","rice","risotto","rosemary","rum"],"S":["sage","salad","salami","salmon","salsa","salt","sandwich","sardine","sauce","sausage","scallop","seaweed","sesame","shallot","shrimp","soda","soup","sourdough","soy","spaghetti","spinach","squash","steak","stew","strawberry","sugar","sushi","syrup"],"T":["taco","tamarind","tangerine","tarragon","tea","thyme","toast","tofu","tomato","tortilla","truffle","tuna","turkey","turmeric","turnip"],"U":["udon","umeboshi"],"V":["vanilla","veal","venison","vinegar"],"W":["waffle","walnut","wasabi","watermelon","wheat","wine"],"Y":["yam","yogurt","yuzu"],"Z":["zest","zucchini"]},"country":{"A":["afghanistan","albania","algeria","andorra","angola","argentina","armenia","australia","austria","azerbaijan"],"B":["bahamas","bahrain","bangladesh","barbados","belarus","belgium","belize","benin","bhutan","bolivia","bosnia","botswana","brazil","brunei","bulgaria","burundi"],"C":["cambodia","cameroon","canada","chad","chile","china","colombia","comoros","congo","costa-rica","croatia","cuba","cyprus","czechia"],"D":["denmark","djibouti","dominica"],"E":["ecuador","egypt","eritrea","estonia","eswatini","ethiopia"],"F":["fiji","finland","france"],"G":["gabon","gambia","georgia","germany","ghana","greece","grenada","guatemala","guinea","guyana"],"H":["haiti","honduras","hungary"],"I":["iceland","india","indonesia","iran","iraq","ireland","israel","italy"],"J":["jamaica","japan","jordan"],"K":["kazakhstan","kenya","kiribati","kosovo","kuwait","kyrgyzstan"],"L":["laos","latvia","lebanon","lesotho","liberia","libya","liechtenstein","lithuania","luxembourg"],"M":["madagascar","malawi","malaysia","maldives","mali","malta","mauritania","mauritius","mexico","moldova","monaco","mongolia","montenegro","morocco","mozambique","myanmar"],"N":["namibia","nauru","nepal","netherlands","nicaragua","niger","nigeria","norway"],"O":["oman"],"P":["pakistan","palau","panama","paraguay","peru","philippines","poland","portugal"],"Q":["qatar"],"R":["romania","russia","rwanda"],"S":["samoa","senegal","serbia","seychelles","singapore","slovakia","slovenia","somalia","spain","sudan","suriname","sweden","switzerland","syria"],"T":["taiwan","tajikistan","tanzania","thailand","togo","tonga","tunisia","turkey","turkmenistan"],"U":["uganda","ukraine","uruguay","uzbekistan"],"V":["vanuatu","venezuela","vietnam"],"W":["wales"],"Y":["yemen"],"Z":["zambia","zimbabwe"]},"color":{"A":["amber","amethyst","apricot","aqua","aquamarine","ash","azure"],"B":["beige","black","blue","bronze","brown","burgundy","burnt-orange"],"C":["camel","canary","caramel","carmine","celadon","cerulean","charcoal","chartreuse","cherry","chestnut","chocolate","cinnamon","citrine","cobalt","copper","coral","cream","crimson","cyan"],"D":["denim"],"E":["ebony","ecru","emerald"],"F":["fawn","fern","flame","flax","fuchsia"],"G":["gold","golden","gray","green"],"H":["hazel","hot-pink"],"I":["ice","indigo","ivory"],"J":["jade","jet"],"K":["khaki"],"L":["lavender","lemon","lilac","lime"],"M":["magenta","mahogany","maroon","mauve","mint","mocha","mustard"],"N":["navy"],"O":["ochre","olive","onyx","opal","orange","orchid"],"P":["peach","pearl","periwinkle","pewter","pine","pink","plum","powder-blue","puce","purple"],"Q":["quartz"],"R":["raspberry","red","rose","rosewood","ruby","rust"],"S":["saffron","sage","salmon","sand","sapphire","scarlet","sepia","silver","sky-blue","slate","steel-blue"],"T":["tan","tangerine","taupe","teal","terracotta","titanium","turquoise"],"U":["ultramarine","umber"],"V":["vermilion","violet","viridian"],"W":["walnut","wheat","white","wine"],"Y":["yellow"],"Z":["zaffre"]},"job":{"A":["accountant","actor","actuary","administrator","advisor","agent","ambassador","analyst","animator","anesthesiologist","archaeologist","architect","artist","astronaut","astronomer","attorney","auditor","author"],"B":["babysitter","baker","banker","barber","bartender","biologist","blacksmith","botanist","bricklayer","broadcaster","broker","builder","butcher","butler"],"C":["cameraman","captain","carpenter","cartographer","cashier","chef","chemist","choreographer","clerk","coach","comedian","composer","conductor","consultant","contractor","cook","copywriter","coroner","counselor","courier","curator"],"D":["dancer","dentist","designer","detective","developer","dietitian","diplomat","director","dispatcher","doctor","dog-walker","driver","drummer"],"E":["economist","editor","electrician","engineer","entrepreneur","epidemiologist"],"F":["farmer","firefighter","fisherman","florist","forester","forecaster"],"G":["gardener","geologist","glassblower","groundskeeper","guard","guide","gymnast"],"H":["hairdresser","handyman","historian","hostess"],"I":["illustrator","inspector","instructor","interpreter","inventor","investigator"],"J":["janitor","jeweler","journalist","judge","juggler"],"K":["keeper"],"L":["landscaper","lawyer","lecturer","librarian","lifeguard","linguist","locksmith"],"M":["machinist","magician","mailman","manager","mason","mathematician","mechanic","medic","midwife","miner","missionary","model","musician"],"N":["nanny","narrator","navigator","negotiator","neurologist","notary","novelist","nurse","nutritionist"],"O":["officer","optician","optometrist","orthodontist"],"P":["painter","paleontologist","paralegal","paramedic","pastor","pathologist","pediatrician","pharmacist","photographer","physician","physicist","pilot","plumber","poet","police-officer","politician","potter","printer","producer","professor","programmer","prosecutor","psychiatrist","psychologist","publisher"],"Q":["quality-inspector"],"R":["rancher","ranger","realtor","receptionist","referee","reporter","researcher"],"S":["sailor","salesperson","scientist","sculptor","seamstress","secretary","security-guard","sheriff","shoemaker","singer","social-worker","soldier","statistician","stockbroker","stylist","surgeon","surveyor"],"T":["tailor","teacher","technician","therapist","trainer","translator","travel-agent","trucker","tutor"],"U":["umpire","usher"],"V":["vet","veterinarian","violinist"],"W":["waiter","waitress","weaver","welder","writer"],"Y":["yoga-instructor","youth-counselor"],"Z":["zookeeper","zoologist"]}};
+
 (function(){
   // ---------------- DATA ----------------
   const CATEGORIES = [
     { key:'noun', label:'Nouns', hint:'any person, place or thing', pos:['noun'] },
     { key:'verb', label:'Verbs', hint:'an action or state', pos:['verb'] },
     { key:'adjective', label:'Adjectives', hint:'a describing word', pos:['adjective'] },
-    { key:'animal', label:'Animals', hint:'any creature, wild or tame', pos:['noun'], semantic:'animal' },
-    { key:'food', label:'Food & drink', hint:'anything edible or drinkable', pos:['noun'], semantic:'food' },
     { key:'adverb', label:'Adverbs', hint:'often ends in -ly', pos:['adverb'] },
+    { key:'animal', label:'Animals', hint:'any creature, wild or tame', semantic:'animal' },
+    { key:'food', label:'Food & drink', hint:'anything edible or drinkable', semantic:'food' },
+    { key:'country', label:'Countries', hint:'name a place on the map', semantic:'country' },
+    { key:'color', label:'Colors', hint:'any shade or hue', semantic:'color' },
+    { key:'job', label:'Jobs', hint:'an occupation or role', semantic:'job' },
   ];
 
   const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const HARD_LETTERS = ['Q','X','Z','J'];
+  const MEDIUM_LETTERS = ['K','V','W','Y','U'];
+
+  function letterMultiplier(letter){
+    if(HARD_LETTERS.includes(letter)) return 3;
+    if(MEDIUM_LETTERS.includes(letter)) return 2;
+    return 1;
+  }
+  function letterDiffClass(letter){
+    if(HARD_LETTERS.includes(letter)) return 'hard';
+    if(MEDIUM_LETTERS.includes(letter)) return 'medium';
+    return '';
+  }
 
   // ---------------- STATE ----------------
   let state = {
@@ -570,12 +868,20 @@
     timeLeft: 60,
     timerId: null,
     running: false,
-    log: [],          // {word, valid, pos, novel}
+    log: [],
     usedThisRound: new Set(),
+    streak: 0,
+    bestStreakThisRound: 0,
+    points: 0,
+    mode: 'pick', // 'pick' | 'random'
   };
 
-  // persistent history across sessions/rounds, keyed by "letter:categoryKey:word"
+  let soundOn = true;
+
+  // ---------------- PERSISTENCE ----------------
   const HISTORY_KEY = 'wordreach_history_v1';
+  const STATS_KEY = 'wordreach_stats_v1';
+
   function loadHistory(){
     try{
       const raw = localStorage.getItem(HISTORY_KEY);
@@ -587,20 +893,147 @@
   }
   let history = loadHistory();
 
+  function defaultStats(){
+    return { rounds:0, bestStreak:0, totalValid:0, totalNovel:0, bestScores:{} };
+  }
+  function loadStats(){
+    try{
+      const raw = localStorage.getItem(STATS_KEY);
+      return raw ? Object.assign(defaultStats(), JSON.parse(raw)) : defaultStats();
+    }catch(e){ return defaultStats(); }
+  }
+  function saveStats(){
+    try{ localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }catch(e){}
+  }
+  let stats = loadStats();
+
   function historyKey(word){
     return `${state.letter}:${state.category.key}:${word.toLowerCase()}`;
+  }
+  function bestKey(){
+    return `${state.letter}:${state.category.key}`;
   }
 
   function updateHistoryPill(){
     document.getElementById('historyPill').textContent = `${history.size} word${history.size===1?'':'s'} logged ever`;
   }
 
+  // ---------------- SOUND ----------------
+  let audioCtx = null;
+  function ensureAudio(){
+    if(!audioCtx){
+      try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+    }
+    return audioCtx;
+  }
+  function beep(freq, dur, type, gainVal){
+    if(!soundOn) return;
+    const ctx = ensureAudio();
+    if(!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    gain.gain.value = gainVal != null ? gainVal : 0.08;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    const now = ctx.currentTime;
+    gain.gain.setValueAtTime(gain.gain.value, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    osc.start(now);
+    osc.stop(now + dur);
+  }
+  function sfxValid(streakLevel){
+    beep(520 + Math.min(streakLevel,6)*40, 0.12, 'sine', 0.07);
+  }
+  function sfxNovel(){
+    beep(720, 0.08, 'sine', 0.06);
+    setTimeout(()=>beep(920, 0.1, 'sine', 0.06), 70);
+  }
+  function sfxInvalid(){
+    beep(160, 0.16, 'sawtooth', 0.05);
+  }
+  function sfxTimeUp(){
+    beep(300,0.15,'triangle',0.06);
+    setTimeout(()=>beep(220,0.22,'triangle',0.06),140);
+  }
+
+  document.getElementById('soundToggle').addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    const btn = document.getElementById('soundToggle');
+    btn.textContent = soundOn ? '🔊' : '🔇';
+    btn.classList.toggle('off', !soundOn);
+    if(soundOn) ensureAudio();
+  });
+
+  // ---------------- STATS PANEL UI ----------------
+  const statsCard = document.getElementById('statsCard');
+  document.getElementById('historyPill').addEventListener('click', openStats);
+  document.getElementById('statsCloseBtn').addEventListener('click', ()=>{
+    statsCard.style.display = 'none';
+  });
+
+  function openStats(){
+    document.getElementById('statRounds').textContent = stats.rounds;
+    document.getElementById('statBestStreak').textContent = stats.bestStreak;
+    document.getElementById('statTotalValid').textContent = stats.totalValid;
+    document.getElementById('statTotalNovel').textContent = stats.totalNovel;
+
+    const entries = Object.entries(stats.bestScores)
+      .sort((a,b)=> b[1].points - a[1].points)
+      .slice(0,8);
+    const bestList = document.getElementById('bestList');
+    if(entries.length === 0){
+      bestList.innerHTML = '<div class="best-empty">play a round to start setting bests</div>';
+    }else{
+      bestList.innerHTML = entries.map(([key, v])=>{
+        const [letter, catKey] = key.split(':');
+        const cat = CATEGORIES.find(c=>c.key===catKey);
+        const label = cat ? cat.label : catKey;
+        return `<div class="best-row"><span>${letter} · ${label}</span><span>${v.points} pts</span></div>`;
+      }).join('');
+    }
+    statsCard.style.display = 'block';
+  }
+
+  // ---------------- MODE TOGGLE ----------------
+  const modePickBtn = document.getElementById('modePickBtn');
+  const modeRandomBtn = document.getElementById('modeRandomBtn');
+  const pickFields = document.getElementById('pickFields');
+  const randomPickBanner = document.getElementById('randomPickBanner');
+
+  modePickBtn.addEventListener('click', ()=>{
+    state.mode = 'pick';
+    modePickBtn.classList.add('active');
+    modeRandomBtn.classList.remove('active');
+    pickFields.style.display = 'block';
+    randomPickBanner.style.display = 'none';
+  });
+  modeRandomBtn.addEventListener('click', ()=>{
+    state.mode = 'random';
+    modeRandomBtn.classList.add('active');
+    modePickBtn.classList.remove('active');
+    pickFields.style.display = 'none';
+    randomPickBanner.style.display = 'block';
+    rollRandomPick();
+  });
+
+  function rollRandomPick(){
+    const letter = LETTERS[Math.floor(Math.random()*LETTERS.length)];
+    const cat = CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)];
+    state.letter = letter;
+    state.category = cat;
+    document.getElementById('rpLetter').textContent = letter;
+    document.getElementById('rpCat').textContent = cat.label;
+  }
+
   // ---------------- SETUP UI ----------------
   const letterGrid = document.getElementById('letterGrid');
   LETTERS.forEach(l=>{
     const btn = document.createElement('button');
-    btn.className = 'letter-btn' + (l===state.letter ? ' active':'');
-    btn.textContent = l;
+    const diff = letterDiffClass(l);
+    btn.className = 'letter-btn' + (diff ? ' '+diff : '') + (l===state.letter ? ' active':'');
+    btn.innerHTML = `${l}<span class="diff-dot"></span>`;
     btn.addEventListener('click', ()=>{
       state.letter = l;
       [...letterGrid.children].forEach(c=>c.classList.remove('active'));
@@ -613,7 +1046,7 @@
     const pick = LETTERS[Math.floor(Math.random()*LETTERS.length)];
     state.letter = pick;
     [...letterGrid.children].forEach(c=>{
-      c.classList.toggle('active', c.textContent === pick);
+      c.classList.toggle('active', c.textContent.trim() === pick);
     });
   });
 
@@ -638,7 +1071,10 @@
     });
   });
 
-  document.getElementById('startBtn').addEventListener('click', startRound);
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    if(state.mode === 'random') rollRandomPick();
+    startRound();
+  });
 
   // ---------------- ROUND FLOW ----------------
   const setupCard = document.getElementById('setupCard');
@@ -649,7 +1085,11 @@
     state.timeLeft = state.seconds;
     state.log = [];
     state.usedThisRound = new Set();
+    state.streak = 0;
+    state.bestStreakThisRound = 0;
+    state.points = 0;
 
+    statsCard.style.display = 'none';
     setupCard.style.display = 'none';
     resultsCard.style.display = 'none';
     gameCard.style.display = 'block';
@@ -660,15 +1100,30 @@
     document.getElementById('timer').textContent = state.timeLeft;
     document.getElementById('timer').classList.remove('urgent');
 
+    const mult = letterMultiplier(state.letter);
+    const diffTag = document.getElementById('letterDiffTag');
+    diffTag.textContent = mult > 1 ? `${state.letter} is worth ${mult}×` : '';
+
+    renderStreak();
     renderLog();
     updateLiveScores();
     setFeedback('', '');
 
+    const noWordsPossible = state.category.semantic &&
+      (!WORD_LISTS[state.category.semantic][state.letter] || WORD_LISTS[state.category.semantic][state.letter].length === 0);
+
     const input = document.getElementById('wordInput');
     input.value = '';
-    input.disabled = false;
-    document.getElementById('submitBtn').disabled = false;
     input.focus();
+
+    if(noWordsPossible){
+      input.disabled = true;
+      document.getElementById('submitBtn').disabled = true;
+      setFeedback(`no common ${state.category.label.toLowerCase()} start with "${state.letter}" — this one's a freebie skip`, 'warn');
+    }else{
+      input.disabled = false;
+      document.getElementById('submitBtn').disabled = false;
+    }
 
     state.running = true;
     clearInterval(state.timerId);
@@ -688,6 +1143,7 @@
     clearInterval(state.timerId);
     document.getElementById('wordInput').disabled = true;
     document.getElementById('submitBtn').disabled = true;
+    sfxTimeUp();
 
     gameCard.style.display = 'none';
     resultsCard.style.display = 'block';
@@ -696,9 +1152,29 @@
     const novelCount = state.log.filter(w=>w.valid && w.novel).length;
     document.getElementById('finalValid').textContent = validCount;
     document.getElementById('finalNovel').textContent = novelCount;
+    document.getElementById('finalStreak').textContent = state.bestStreakThisRound;
+    document.getElementById('finalPoints').textContent = state.points;
+
+    // persist stats
+    stats.rounds += 1;
+    stats.totalValid += validCount;
+    stats.totalNovel += novelCount;
+    if(state.bestStreakThisRound > stats.bestStreak) stats.bestStreak = state.bestStreakThisRound;
+
+    const key = bestKey();
+    const prevBest = stats.bestScores[key];
+    const pbBanner = document.getElementById('pbBanner');
+    if(!prevBest || state.points > prevBest.points){
+      stats.bestScores[key] = { points: state.points, valid: validCount, novel: novelCount };
+      pbBanner.style.display = (prevBest ? 'block' : (state.points>0 ? 'block' : 'none'));
+    }else{
+      pbBanner.style.display = 'none';
+    }
+    saveStats();
 
     let headline = "Time's up.";
     if(validCount === 0) headline = "Tough round.";
+    else if(state.bestStreakThisRound >= 5) headline = "On fire!";
     else if(novelCount >= 3) headline = "Nice reach!";
     else if(validCount >= 8) headline = "Solid pace.";
     document.getElementById('resultsHeadline').textContent = headline;
@@ -734,12 +1210,14 @@
     const word = raw.toLowerCase().replace(/[^a-z'-]/g,'');
     if(!word){
       flashShake();
+      sfxInvalid();
       setFeedback('letters only, please.', 'bad');
       return;
     }
 
     if(word[0] !== state.letter.toLowerCase()){
       flashShake();
+      sfxInvalid();
       setFeedback(`needs to start with "${state.letter}"`, 'bad');
       input.value='';
       return;
@@ -747,6 +1225,7 @@
 
     if(state.usedThisRound.has(word)){
       flashShake();
+      sfxInvalid();
       setFeedback(`already used "${word}" this round`, 'warn');
       input.value='';
       updateLiveScores(true);
@@ -774,15 +1253,43 @@
       updateHistoryPill();
     }
 
-    state.log.unshift({ word, valid: result.valid, pos: result.pos, novel, reason: result.reason });
+    let pointsEarned = 0;
+    if(result.valid){
+      state.streak += 1;
+      if(state.streak > state.bestStreakThisRound) state.bestStreakThisRound = state.streak;
+      const mult = currentMultiplier();
+      const letterMult = letterMultiplier(state.letter);
+      pointsEarned = Math.round((1 * letterMult + (novel ? 1 : 0)) * mult);
+      state.points += pointsEarned;
+    }else{
+      state.streak = 0;
+    }
+
+    state.log.unshift({ word, valid: result.valid, pos: result.pos, novel, reason: result.reason, points: pointsEarned });
     renderLog();
     updateLiveScores();
+    renderStreak();
 
     if(result.valid){
-      setFeedback(novel ? `✓ new word — nice reach` : `✓ valid (used before)`, 'good');
+      if(novel){ sfxNovel(); } else { sfxValid(state.streak); }
+      setFeedback(novel ? `✓ new word — nice reach (+${pointsEarned})` : `✓ valid (used before) (+${pointsEarned})`, 'good');
     }else{
+      sfxInvalid();
       setFeedback(result.reason, 'bad');
     }
+  }
+
+  function currentMultiplier(){
+    // every 3 consecutive valid words adds +0.5x, caps at 3x
+    const steps = Math.floor(state.streak / 3);
+    return Math.min(1 + steps * 0.5, 3);
+  }
+
+  function renderStreak(){
+    const sc = document.getElementById('streakCount');
+    sc.textContent = state.streak;
+    sc.classList.toggle('lit', state.streak > 0);
+    document.getElementById('multTag').textContent = currentMultiplier().toFixed(1) + '×';
   }
 
   function flashShake(){
@@ -795,6 +1302,16 @@
   const dictCache = new Map();
 
   async function checkWord(word, category){
+    // semantic categories are resolved entirely from curated lists —
+    // no dictionary call, no false positives from unrelated nouns.
+    if(category.semantic){
+      const list = (WORD_LISTS[category.semantic] && WORD_LISTS[category.semantic][state.letter]) || [];
+      if(list.includes(word)){
+        return { valid:true, pos: category.semantic, reason:'' };
+      }
+      return { valid:false, pos:null, reason:`"${word}" isn't on our ${category.label.toLowerCase()} list for ${state.letter}` };
+    }
+
     if(dictCache.has(word)){
       return classify(dictCache.get(word), category, word);
     }
@@ -825,15 +1342,6 @@
       });
     });
 
-    // semantic categories (animal/food) can't be verified by part-of-speech alone,
-    // so for those we just require it to be a valid noun and trust the player.
-    if(category.semantic){
-      if(allPos.has('noun')){
-        return { valid:true, pos: category.semantic, reason:'' };
-      }
-      return { valid:false, pos:null, reason:`"${word}" exists, but isn't used as a noun` };
-    }
-
     const wanted = category.pos[0];
     if(allPos.has(wanted)){
       return { valid:true, pos: wanted, reason:'' };
@@ -853,11 +1361,13 @@
       const mark = item.valid ? '✓' : '✕';
       const posTag = item.valid ? `<span class="pos">${item.pos}</span>` : '';
       const novelTag = item.novel ? `<span class="novel-badge">new</span>` : '';
+      const ptsTag = item.valid ? `<span class="pts-badge">+${item.points}</span>` : '';
       return `<div class="word-row ${cls}">
         <span class="mark">${mark}</span>
         <span class="w">${escapeHtml(item.word)}</span>
         ${posTag}
         ${novelTag}
+        ${ptsTag}
       </div>`;
     }).join('');
   }
@@ -866,14 +1376,22 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
+  function popBox(id){
+    const el = document.getElementById(id);
+    el.classList.remove('pop');
+    void el.offsetWidth;
+    el.classList.add('pop');
+  }
+
   function updateLiveScores(repeatHit){
     const valid = state.log.filter(w=>w.valid).length;
     const novel = state.log.filter(w=>w.valid && w.novel).length;
     document.getElementById('liveValid').textContent = valid;
     document.getElementById('liveNovel').textContent = novel;
-    if(repeatHit){
-      const el = document.getElementById('liveRepeats');
-      el.textContent = (parseInt(el.textContent,10)||0) + 1;
+    document.getElementById('livePoints').textContent = state.points;
+    if(!repeatHit){
+      popBox('boxValid'); popBox('boxScore');
+      if(novel) popBox('boxNovel');
     }
   }
 
