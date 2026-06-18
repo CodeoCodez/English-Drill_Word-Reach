@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Reach — a retrieval drill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #FAF6F0;
+    --paper-line: #E8E0D2;
+    --ink: #1F2421;
+    --ink-soft: #5C6661;
+    --clay: #C1502E;
+    --clay-soft: #E8C4B5;
+    --sage: #7A8B6F;
+    --sage-soft: #DCE3D4;
+    --amber: #D4A24C;
+    --amber-soft: #F0DDB6;
+    --card: #FFFFFF;
+    --shadow: 0 1px 2px rgba(31,36,33,0.06), 0 4px 14px rgba(31,36,33,0.05);
+    --radius: 14px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 38px,
+        var(--paper-line) 39px
+      );
+    opacity:0.5;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:640px;
+    margin:0 auto;
+    padding:32px 20px 80px;
+  }
+
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:28px;
+    gap:12px;
+  }
+  header h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.5rem;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  header h1 span{ color:var(--clay); font-style:italic; }
+  .tagline{
+    font-size:0.8rem;
+    color:var(--ink-soft);
+    margin:2px 0 0;
+  }
+  .stat-pill{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    background:var(--card);
+    border:1px solid var(--paper-line);
+    border-radius:999px;
+    padding:6px 12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  /* ---------- SETUP SCREEN ---------- */
+  .setup-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:28px;
+  }
+  .field-label{
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+    display:block;
+    font-weight:600;
+  }
+  .letter-grid{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    gap:8px;
+    margin-bottom:22px;
+  }
+  .letter-btn{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:1.05rem;
+    aspect-ratio:1;
+    border:1.5px solid var(--paper-line);
+    background:var(--paper);
+    border-radius:10px;
+    cursor:pointer;
+    color:var(--ink);
+    transition:all 0.15s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .letter-btn:hover{ border-color:var(--clay); transform:translateY(-1px); }
+  .letter-btn.active{
+    background:var(--clay);
+    border-color:var(--clay);
+    color:white;
+  }
+  .random-letter{
+    grid-column:span 7;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:0.8rem;
+    border:1.5px dashed var(--ink-soft);
+    background:transparent;
+    color:var(--ink-soft);
+    border-radius:10px;
+    padding:10px;
+    cursor:pointer;
+    margin-top:2px;
+  }
+  .random-letter:hover{ border-color:var(--clay); color:var(--clay); }
+
+  .category-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:22px;
+  }
+  .cat-btn{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:0.88rem;
+    font-weight:500;
+    padding:12px 10px;
+    border:1.5px solid var(--paper-line);
+    background:var(--paper);
+    border-radius:10px;
+    cursor:pointer;
+    color:var(--ink);
+    text-align:left;
+    transition:all 0.15s ease;
+  }
+  .cat-btn:hover{ border-color:var(--sage); }
+  .cat-btn.active{
+    background:var(--sage);
+    border-color:var(--sage);
+    color:white;
+  }
+  .cat-btn small{
+    display:block;
+    font-size:0.7rem;
+    opacity:0.7;
+    font-weight:400;
+    margin-top:2px;
+  }
+
+  .time-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:24px;
+  }
+  .time-btn{
+    flex:1;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.85rem;
+    padding:10px;
+    border:1.5px solid var(--paper-line);
+    background:var(--paper);
+    border-radius:10px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .time-btn.active{
+    background:var(--amber);
+    border-color:var(--amber);
+    color:white;
+  }
+
+  .start-btn{
+    width:100%;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:10px;
+    padding:16px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.05rem;
+    cursor:pointer;
+    transition:transform 0.12s ease, background 0.15s ease;
+  }
+  .start-btn:hover{ background:var(--clay); transform:translateY(-1px); }
+  .start-btn:active{ transform:translateY(0); }
+
+  /* ---------- GAME SCREEN ---------- */
+  .game-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:24px;
+    display:none;
+  }
+  .prompt-row{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:18px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .big-letter{
+    font-family:'Fraunces', serif;
+    font-size:3.4rem;
+    font-weight:600;
+    color:var(--clay);
+    line-height:1;
+    font-style:italic;
+  }
+  .prompt-meta{ flex:1; }
+  .prompt-cat{
+    font-size:1rem;
+    font-weight:600;
+  }
+  .prompt-hint{
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .timer{
+    font-family:'JetBrains Mono', monospace;
+    font-size:1.3rem;
+    font-weight:600;
+    color:var(--ink);
+    min-width:58px;
+    text-align:right;
+  }
+  .timer.urgent{ color:var(--clay); }
+
+  .input-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  #wordInput{
+    flex:1;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:1rem;
+    padding:13px 14px;
+    border:1.5px solid var(--paper-line);
+    border-radius:10px;
+    background:var(--paper);
+    color:var(--ink);
+    outline:none;
+  }
+  #wordInput:focus{ border-color:var(--clay); }
+  #wordInput.shake{ animation:shake 0.3s ease; border-color:var(--clay); }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+  .submit-btn{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:0.9rem;
+    padding:13px 18px;
+    border:none;
+    border-radius:10px;
+    background:var(--ink);
+    color:var(--paper);
+    cursor:pointer;
+  }
+  .submit-btn:hover{ background:var(--clay); }
+  .submit-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .feedback-line{
+    font-size:0.8rem;
+    min-height:18px;
+    margin-bottom:14px;
+    color:var(--ink-soft);
+  }
+  .feedback-line.bad{ color:var(--clay); }
+  .feedback-line.good{ color:var(--sage); }
+  .feedback-line.warn{ color:var(--amber); }
+
+  /* the running list, like a handwritten sheet */
+  .word-log{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    max-height:280px;
+    overflow-y:auto;
+    margin-bottom:18px;
+  }
+  .word-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 2px;
+    border-bottom:1px solid var(--paper-line);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.92rem;
+    animation:slideIn 0.25s ease;
+  }
+  @keyframes slideIn{
+    from{ opacity:0; transform:translateX(-6px); }
+    to{ opacity:1; transform:translateX(0); }
+  }
+  .word-row .mark{
+    width:18px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .word-row.valid .mark{ color:var(--sage); }
+  .word-row.invalid .mark{ color:var(--clay); }
+  .word-row.invalid .w{ color:var(--ink-soft); text-decoration:line-through; }
+  .word-row .w{ flex:1; }
+  .word-row .pos{
+    font-size:0.7rem;
+    color:var(--ink-soft);
+    background:var(--paper);
+    padding:2px 8px;
+    border-radius:6px;
+  }
+  .word-row .novel-badge{
+    font-size:0.65rem;
+    background:var(--amber-soft);
+    color:#8a6420;
+    padding:2px 7px;
+    border-radius:6px;
+  }
+  .word-log::-webkit-scrollbar{ width:6px; }
+  .word-log::-webkit-scrollbar-thumb{ background:var(--paper-line); border-radius:3px; }
+
+  .empty-log{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:0.85rem;
+    padding:24px 0;
+    font-style:italic;
+    font-family:'Fraunces', serif;
+  }
+
+  .score-row{
+    display:flex;
+    gap:10px;
+  }
+  .score-box{
+    flex:1;
+    background:var(--paper);
+    border-radius:10px;
+    padding:12px;
+    text-align:center;
+  }
+  .score-num{
+    font-family:'Fraunces', serif;
+    font-size:1.5rem;
+    font-weight:600;
+  }
+  .score-label{
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- RESULTS SCREEN ---------- */
+  .results-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:28px;
+    display:none;
+    text-align:center;
+  }
+  .results-card h2{
+    font-family:'Fraunces', serif;
+    font-size:1.6rem;
+    margin:0 0 4px;
+  }
+  .results-sub{
+    color:var(--ink-soft);
+    font-size:0.88rem;
+    margin-bottom:24px;
+  }
+  .results-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .results-grid .score-box{ background:var(--paper); }
+  .again-btn{
+    width:100%;
+    background:var(--clay);
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:15px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:0.95rem;
+    cursor:pointer;
+    margin-bottom:10px;
+  }
+  .again-btn:hover{ background:#a8431f; }
+  .setup-again-btn{
+    width:100%;
+    background:transparent;
+    color:var(--ink-soft);
+    border:1.5px solid var(--paper-line);
+    border-radius:10px;
+    padding:13px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:500;
+    font-size:0.9rem;
+    cursor:pointer;
+  }
+  .setup-again-btn:hover{ border-color:var(--ink-soft); color:var(--ink); }
+
+  .hidden{ display:none !important; }
+
+  footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:0.72rem;
+    margin-top:28px;
+    opacity:0.7;
+  }
+
+  @media (max-width:420px){
+    .big-letter{ font-size:2.6rem; }
+    .letter-grid{ grid-template-columns:repeat(6,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Word <span>Reach</span></h1>
+      <p class="tagline">a retrieval drill, not a vocabulary test</p>
+    </div>
+    <div class="stat-pill" id="historyPill">0 words logged ever</div>
+  </header>
+
+  <!-- SETUP -->
+  <div class="setup-card" id="setupCard">
+    <label class="field-label">Pick a letter</label>
+    <div class="letter-grid" id="letterGrid"></div>
+    <button class="random-letter" id="randomLetterBtn">🎲 surprise me with a letter</button>
+
+    <label class="field-label">Pick a category</label>
+    <div class="category-grid" id="categoryGrid"></div>
+
+    <label class="field-label">Round length</label>
+    <div class="time-row" id="timeRow">
+      <button class="time-btn" data-secs="30">30s</button>
+      <button class="time-btn active" data-secs="60">60s</button>
+      <button class="time-btn" data-secs="90">90s</button>
+    </div>
+
+    <button class="start-btn" id="startBtn">Start round →</button>
+  </div>
+
+  <!-- GAME -->
+  <div class="game-card" id="gameCard">
+    <div class="prompt-row">
+      <div class="big-letter" id="gameLetter">S</div>
+      <div class="prompt-meta">
+        <div class="prompt-cat" id="gameCat">Verbs</div>
+        <div class="prompt-hint" id="gameHint">type a word, hit enter</div>
+      </div>
+      <div class="timer" id="timer">60</div>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="wordInput" placeholder="start typing..." autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="submit-btn" id="submitBtn">Add</button>
+    </div>
+    <div class="feedback-line" id="feedbackLine"></div>
+
+    <div class="word-log" id="wordLog">
+      <div class="empty-log">your words will stack up here →</div>
+    </div>
+
+    <div class="score-row">
+      <div class="score-box">
+        <div class="score-num" id="liveValid">0</div>
+        <div class="score-label">Valid</div>
+      </div>
+      <div class="score-box">
+        <div class="score-num" id="liveNovel">0</div>
+        <div class="score-label">New for you</div>
+      </div>
+      <div class="score-box">
+        <div class="score-num" id="liveRepeats">0</div>
+        <div class="score-label">Repeats</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-card" id="resultsCard">
+    <h2 id="resultsHeadline">Time's up.</h2>
+    <p class="results-sub" id="resultsSub">Here's how the search went.</p>
+    <div class="results-grid">
+      <div class="score-box">
+        <div class="score-num" id="finalValid">0</div>
+        <div class="score-label">Valid words</div>
+      </div>
+      <div class="score-box">
+        <div class="score-num" id="finalNovel">0</div>
+        <div class="score-label">First-time words</div>
+      </div>
+    </div>
+    <button class="again-btn" id="sameAgainBtn">Run it again — same letter & category</button>
+    <button class="setup-again-btn" id="newSetupBtn">Pick something new</button>
+  </div>
+
+  <footer>Word validation via dictionaryapi.dev · words you've used before are tracked locally in this browser, just for you</footer>
+</div>
+
+<script>
+(function(){
+  // ---------------- DATA ----------------
+  const CATEGORIES = [
+    { key:'noun', label:'Nouns', hint:'any person, place or thing', pos:['noun'] },
+    { key:'verb', label:'Verbs', hint:'an action or state', pos:['verb'] },
+    { key:'adjective', label:'Adjectives', hint:'a describing word', pos:['adjective'] },
+    { key:'animal', label:'Animals', hint:'any creature, wild or tame', pos:['noun'], semantic:'animal' },
+    { key:'food', label:'Food & drink', hint:'anything edible or drinkable', pos:['noun'], semantic:'food' },
+    { key:'adverb', label:'Adverbs', hint:'often ends in -ly', pos:['adverb'] },
+  ];
+
+  const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+  // ---------------- STATE ----------------
+  let state = {
+    letter: 'S',
+    category: CATEGORIES[1], // verb default
+    seconds: 60,
+    timeLeft: 60,
+    timerId: null,
+    running: false,
+    log: [],          // {word, valid, pos, novel}
+    usedThisRound: new Set(),
+  };
+
+  // persistent history across sessions/rounds, keyed by "letter:categoryKey:word"
+  const HISTORY_KEY = 'wordreach_history_v1';
+  function loadHistory(){
+    try{
+      const raw = localStorage.getItem(HISTORY_KEY);
+      return raw ? new Set(JSON.parse(raw)) : new Set();
+    }catch(e){ return new Set(); }
+  }
+  function saveHistory(set){
+    try{ localStorage.setItem(HISTORY_KEY, JSON.stringify([...set])); }catch(e){}
+  }
+  let history = loadHistory();
+
+  function historyKey(word){
+    return `${state.letter}:${state.category.key}:${word.toLowerCase()}`;
+  }
+
+  function updateHistoryPill(){
+    document.getElementById('historyPill').textContent = `${history.size} word${history.size===1?'':'s'} logged ever`;
+  }
+
+  // ---------------- SETUP UI ----------------
+  const letterGrid = document.getElementById('letterGrid');
+  LETTERS.forEach(l=>{
+    const btn = document.createElement('button');
+    btn.className = 'letter-btn' + (l===state.letter ? ' active':'');
+    btn.textContent = l;
+    btn.addEventListener('click', ()=>{
+      state.letter = l;
+      [...letterGrid.children].forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    letterGrid.appendChild(btn);
+  });
+
+  document.getElementById('randomLetterBtn').addEventListener('click', ()=>{
+    const pick = LETTERS[Math.floor(Math.random()*LETTERS.length)];
+    state.letter = pick;
+    [...letterGrid.children].forEach(c=>{
+      c.classList.toggle('active', c.textContent === pick);
+    });
+  });
+
+  const categoryGrid = document.getElementById('categoryGrid');
+  CATEGORIES.forEach((cat,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (i===1 ? ' active':'');
+    btn.innerHTML = `${cat.label}<small>${cat.hint}</small>`;
+    btn.addEventListener('click', ()=>{
+      state.category = cat;
+      [...categoryGrid.children].forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    categoryGrid.appendChild(btn);
+  });
+
+  document.querySelectorAll('.time-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      state.seconds = parseInt(btn.dataset.secs, 10);
+    });
+  });
+
+  document.getElementById('startBtn').addEventListener('click', startRound);
+
+  // ---------------- ROUND FLOW ----------------
+  const setupCard = document.getElementById('setupCard');
+  const gameCard = document.getElementById('gameCard');
+  const resultsCard = document.getElementById('resultsCard');
+
+  function startRound(){
+    state.timeLeft = state.seconds;
+    state.log = [];
+    state.usedThisRound = new Set();
+
+    setupCard.style.display = 'none';
+    resultsCard.style.display = 'none';
+    gameCard.style.display = 'block';
+
+    document.getElementById('gameLetter').textContent = state.letter;
+    document.getElementById('gameCat').textContent = state.category.label;
+    document.getElementById('gameHint').textContent = state.category.hint;
+    document.getElementById('timer').textContent = state.timeLeft;
+    document.getElementById('timer').classList.remove('urgent');
+
+    renderLog();
+    updateLiveScores();
+    setFeedback('', '');
+
+    const input = document.getElementById('wordInput');
+    input.value = '';
+    input.disabled = false;
+    document.getElementById('submitBtn').disabled = false;
+    input.focus();
+
+    state.running = true;
+    clearInterval(state.timerId);
+    state.timerId = setInterval(()=>{
+      state.timeLeft -= 1;
+      const t = document.getElementById('timer');
+      t.textContent = state.timeLeft;
+      if(state.timeLeft <= 10) t.classList.add('urgent');
+      if(state.timeLeft <= 0){
+        endRound();
+      }
+    }, 1000);
+  }
+
+  function endRound(){
+    state.running = false;
+    clearInterval(state.timerId);
+    document.getElementById('wordInput').disabled = true;
+    document.getElementById('submitBtn').disabled = true;
+
+    gameCard.style.display = 'none';
+    resultsCard.style.display = 'block';
+
+    const validCount = state.log.filter(w=>w.valid).length;
+    const novelCount = state.log.filter(w=>w.valid && w.novel).length;
+    document.getElementById('finalValid').textContent = validCount;
+    document.getElementById('finalNovel').textContent = novelCount;
+
+    let headline = "Time's up.";
+    if(validCount === 0) headline = "Tough round.";
+    else if(novelCount >= 3) headline = "Nice reach!";
+    else if(validCount >= 8) headline = "Solid pace.";
+    document.getElementById('resultsHeadline').textContent = headline;
+
+    document.getElementById('resultsSub').textContent =
+      `${state.letter} · ${state.category.label} · ${state.seconds}s`;
+  }
+
+  document.getElementById('sameAgainBtn').addEventListener('click', startRound);
+  document.getElementById('newSetupBtn').addEventListener('click', ()=>{
+    resultsCard.style.display = 'none';
+    setupCard.style.display = 'block';
+  });
+
+  // ---------------- INPUT / VALIDATION ----------------
+  const input = document.getElementById('wordInput');
+  const feedback = document.getElementById('feedbackLine');
+
+  function setFeedback(msg, cls){
+    feedback.textContent = msg;
+    feedback.className = 'feedback-line' + (cls ? ' '+cls : '');
+  }
+
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter') submitWord();
+  });
+  document.getElementById('submitBtn').addEventListener('click', submitWord);
+
+  async function submitWord(){
+    if(!state.running) return;
+    const raw = input.value.trim();
+    if(!raw) return;
+    const word = raw.toLowerCase().replace(/[^a-z'-]/g,'');
+    if(!word){
+      flashShake();
+      setFeedback('letters only, please.', 'bad');
+      return;
+    }
+
+    if(word[0] !== state.letter.toLowerCase()){
+      flashShake();
+      setFeedback(`needs to start with "${state.letter}"`, 'bad');
+      input.value='';
+      return;
+    }
+
+    if(state.usedThisRound.has(word)){
+      flashShake();
+      setFeedback(`already used "${word}" this round`, 'warn');
+      input.value='';
+      updateLiveScores(true);
+      return;
+    }
+
+    input.disabled = true;
+    document.getElementById('submitBtn').disabled = true;
+    setFeedback('checking...', '');
+
+    const result = await checkWord(word, state.category);
+
+    input.disabled = false;
+    document.getElementById('submitBtn').disabled = state.timeLeft<=0;
+    input.value = '';
+    input.focus();
+
+    state.usedThisRound.add(word);
+
+    const seenBefore = history.has(historyKey(word));
+    const novel = result.valid && !seenBefore;
+    if(result.valid){
+      history.add(historyKey(word));
+      saveHistory(history);
+      updateHistoryPill();
+    }
+
+    state.log.unshift({ word, valid: result.valid, pos: result.pos, novel, reason: result.reason });
+    renderLog();
+    updateLiveScores();
+
+    if(result.valid){
+      setFeedback(novel ? `✓ new word — nice reach` : `✓ valid (used before)`, 'good');
+    }else{
+      setFeedback(result.reason, 'bad');
+    }
+  }
+
+  function flashShake(){
+    input.classList.remove('shake');
+    void input.offsetWidth;
+    input.classList.add('shake');
+  }
+
+  // cache lookups in-memory so repeated checks during a session don't refetch
+  const dictCache = new Map();
+
+  async function checkWord(word, category){
+    if(dictCache.has(word)){
+      return classify(dictCache.get(word), category, word);
+    }
+    try{
+      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+      if(res.status === 404){
+        dictCache.set(word, null);
+        return { valid:false, pos:null, reason:`"${word}" isn't in the dictionary` };
+      }
+      if(!res.ok){
+        return { valid:false, pos:null, reason:'lookup failed — try again' };
+      }
+      const data = await res.json();
+      dictCache.set(word, data);
+      return classify(data, category, word);
+    }catch(err){
+      return { valid:false, pos:null, reason:'network issue — check connection' };
+    }
+  }
+
+  function classify(data, category, word){
+    if(!data) return { valid:false, pos:null, reason:`"${word}" isn't in the dictionary` };
+
+    const allPos = new Set();
+    data.forEach(entry=>{
+      (entry.meanings||[]).forEach(m=>{
+        if(m.partOfSpeech) allPos.add(m.partOfSpeech.toLowerCase());
+      });
+    });
+
+    // semantic categories (animal/food) can't be verified by part-of-speech alone,
+    // so for those we just require it to be a valid noun and trust the player.
+    if(category.semantic){
+      if(allPos.has('noun')){
+        return { valid:true, pos: category.semantic, reason:'' };
+      }
+      return { valid:false, pos:null, reason:`"${word}" exists, but isn't used as a noun` };
+    }
+
+    const wanted = category.pos[0];
+    if(allPos.has(wanted)){
+      return { valid:true, pos: wanted, reason:'' };
+    }
+    return { valid:false, pos:null, reason:`"${word}" exists, but not as a ${wanted}` };
+  }
+
+  // ---------------- RENDER ----------------
+  function renderLog(){
+    const log = document.getElementById('wordLog');
+    if(state.log.length === 0){
+      log.innerHTML = '<div class="empty-log">your words will stack up here →</div>';
+      return;
+    }
+    log.innerHTML = state.log.map(item=>{
+      const cls = item.valid ? 'valid' : 'invalid';
+      const mark = item.valid ? '✓' : '✕';
+      const posTag = item.valid ? `<span class="pos">${item.pos}</span>` : '';
+      const novelTag = item.novel ? `<span class="novel-badge">new</span>` : '';
+      return `<div class="word-row ${cls}">
+        <span class="mark">${mark}</span>
+        <span class="w">${escapeHtml(item.word)}</span>
+        ${posTag}
+        ${novelTag}
+      </div>`;
+    }).join('');
+  }
+
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function updateLiveScores(repeatHit){
+    const valid = state.log.filter(w=>w.valid).length;
+    const novel = state.log.filter(w=>w.valid && w.novel).length;
+    document.getElementById('liveValid').textContent = valid;
+    document.getElementById('liveNovel').textContent = novel;
+    if(repeatHit){
+      const el = document.getElementById('liveRepeats');
+      el.textContent = (parseInt(el.textContent,10)||0) + 1;
+    }
+  }
+
+  updateHistoryPill();
+})();
+</script>
+
+</body>
+</html>
